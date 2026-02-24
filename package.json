@@ -9,7 +9,10 @@
     "dev": "ts-node src/main.ts",
     "build:standard": "mkdir -p dist && esbuild src/main.ts --bundle --platform=node --target=node22 --outfile=dist/index.js",
     "build:minify": "mkdir -p dist && esbuild src/main.ts --bundle --platform=node --target=node22 --outfile=dist/index.min.js --minify",
-    "build": "npm run build:standard && npm run build:minify"
+    "build": "npm run build:standard && npm run build:minify",
+    "test": "jest",
+    "lint": "eslint 'src/**/*.ts' 'tests/**/*.ts'",
+    "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts' 'README.md' 'GEMINI.md'"
   },
   "keywords": [
     "backup",
@@ -33,9 +36,22 @@
     "@types/archiver": "^6.0.3",
     "@types/glob": "^8.1.0",
     "@types/inquirer": "^8.2.12",
+    "@types/jest": "^30.0.0",
     "@types/node": "^22.13.5",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
     "esbuild": "^0.25.11",
+    "eslint": "^10.0.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-jest": "^29.15.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "jest": "^30.2.0",
+    "prettier": "^3.8.1",
+    "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": "22"
   }
 }

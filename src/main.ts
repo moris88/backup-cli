@@ -3,23 +3,17 @@ const path = require("path");
 const archiver = require("archiver");
 const { glob } = require("glob");
 const inquirer = require("inquirer");
+const {
+  formatFileName,
+  validateSelection,
+  filterRootContent,
+  generatePassword,
+  formatProgress,
+  prepareChoices,
+} = require("./utils/utils");
 
 // Registra il formato zip-encryptable per archiver
-archiver.registerFormat('zip-encryptable', require('archiver-zip-encryptable'));
-
-/**
- * Genera una password casuale di 14 caratteri con alfanumerici e caratteri speciali.
- */
-function generatePassword(): string {
-  const length = 14;
-  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=";
-  let password = "";
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * charset.length);
-    password += charset[randomIndex];
-  }
-  return password;
-}
+archiver.registerFormat("zip-encryptable", require("archiver-zip-encryptable"));
 
 /**
  * Crea un file zip di backup di tutti i file nella directory genitore della cartella src,
@@ -35,19 +29,19 @@ async function createBackup(): Promise<void> {
 
   // 2. Legge il contenuto della root per permettere la selezione
   const rootContent = fs.readdirSync(projectRoot);
-  const excludeList = ["node_modules", "dist", ".next", ".git", "tsconfig.json"];
-  
-  const choices = rootContent
-    .filter((item: string) => !excludeList.includes(item) && !item.startsWith("backup_"))
-    .map((item: string) => {
-      const isDirectory = fs.statSync(path.join(projectRoot, item)).isDirectory();
-      return {
-        name: isDirectory ? `[DIR]  ${item}` : `[FILE] ${item}`,
-        value: item,
-        short: item
-      };
-    })
-    .sort((a: any, b: any) => a.name.localeCompare(b.name));
+  const excludeList = [
+    "node_modules",
+    "dist",
+    ".next",
+    ".git",
+    "tsconfig.json",
+  ];
+
+  const filteredContent = filterRootContent(rootContent, excludeList);
+
+  const choices = prepareChoices(filteredContent, (item: string) =>
+    fs.statSync(path.join(projectRoot, item)).isDirectory(),
+  );
 
   const selectionAnswer = await inquirer.prompt([
     {
@@ -55,12 +49,7 @@ async function createBackup(): Promise<void> {
       name: "selectedItems",
       message: "Seleziona i file e le cartelle da includere nel backup:",
       choices: choices,
-      validate: (answer: string[]) => {
-        if (answer.length < 1) {
-          return "Devi selezionare almeno un elemento.";
-        }
-        return true;
-      },
+      validate: validateSelection,
     },
   ]);
 
@@ -75,9 +64,10 @@ async function createBackup(): Promise<void> {
     {
       type: "input",
       name: "fileName",
-      message: "Inserisci il nome del file di backup (premi Invio per il default):",
+      message:
+        "Inserisci il nome del file di backup (premi Invio per il default):",
       default: defaultFileName,
-      filter: (input: string) => (input.endsWith(".zip") ? input : `${input}.zip`),
+      filter: formatFileName,
     },
   ]);
 
@@ -96,7 +86,9 @@ async function createBackup(): Promise<void> {
     ]);
 
     if (!overwriteAnswer.overwrite) {
-      console.log("Operazione annullata: il file esistente non verrà sovrascritto.");
+      console.log(
+        "Operazione annullata: il file esistente non verrà sovrascritto.",
+      );
       return;
     }
   } else {
@@ -116,12 +108,12 @@ async function createBackup(): Promise<void> {
   }
 
   console.log(`\nInizio del processo di backup: ${outputFileName}`);
-  
+
   const password = generatePassword();
   const output = fs.createWriteStream(outputFilePath);
   const archive = archiver("zip-encryptable", {
     zlib: { level: 9 }, // Imposta il livello di compressione
-    password: password
+    password: password,
   });
 
   archive.on("error", (err: Error) => {
@@ -130,21 +122,18 @@ async function createBackup(): Promise<void> {
 
   archive.pipe(output);
 
-  archive.on("progress", (progress: any) => {
-    const processedMB: string = (progress.fs.processedBytes / 1024 / 1024).toFixed(2);
-    const totalMB: string = (progress.fs.totalBytes / 1024 / 1024).toFixed(2);
-    const percentage: string =
-      progress.fs.totalBytes > 0
-        ? ((progress.fs.processedBytes / progress.fs.totalBytes) * 100).toFixed(2)
-        : "0";
-    process.stdout.write(
-      `\rZippando: ${percentage}% (${processedMB} MB / ${totalMB} MB)...`
-    );
-  });
+  archive.on(
+    "progress",
+    (progress: { fs: { processedBytes: number; totalBytes: number } }) => {
+      process.stdout.write(
+        formatProgress(progress.fs.processedBytes, progress.fs.totalBytes),
+      );
+    },
+  );
 
   // 6. Trova i file basandosi sulla selezione dell'utente
   console.log("Scansione dei file in corso...");
-  
+
   for (const item of selectedItems) {
     const fullPath = path.join(projectRoot, item);
     const isDirectory = fs.statSync(fullPath).isDirectory();
@@ -155,9 +144,9 @@ async function createBackup(): Promise<void> {
         cwd: projectRoot,
         nodir: true,
         dot: true,
-        ignore: ["**/node_modules/**", "**/dist/**", "**/.next/**"]
+        ignore: ["**/node_modules/**", "**/dist/**", "**/.next/**"],
       });
-      
+
       files.forEach((file: string) => {
         archive.file(path.join(projectRoot, file), { name: file });
       });
@@ -172,13 +161,15 @@ async function createBackup(): Promise<void> {
       process.stdout.write("\n");
       console.log(`Backup completato. Creato il file: ${outputFileName}`);
       console.log(
-        `Dimensione finale: ${(archive.pointer() / 1024 / 1024).toFixed(2)} MB`
+        `Dimensione finale: ${(archive.pointer() / 1024 / 1024).toFixed(2)} MB`,
       );
       console.log("\n========================================");
       console.log("PASSWORD ZIP GENERATA:");
       console.log(password);
       console.log("========================================\n");
-      console.log("IMPORTANTE: Salva questa password in un posto sicuro. Non verrà salvata altrove.");
+      console.log(
+        "IMPORTANTE: Salva questa password in un posto sicuro. Non verrà salvata altrove.",
+      );
       resolve();
     });
     output.on("error", reject);
@@ -188,6 +179,8 @@ async function createBackup(): Promise<void> {
   await closePromise;
 }
 
-createBackup().catch((err: Error) => {
-  console.error("Errore durante la creazione del backup:", err);
-});
+if (require.main === module) {
+  createBackup().catch((err: Error) => {
+    console.error("Errore durante la creazione del backup:", err);
+  });
+}
