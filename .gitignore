@@ -1,0 +1,14 @@
+/dist
+/node_modules
+
+.env
+
+package-lock.json
+yarn.lock
+yarn-error.log
+pnpm-lock.yaml
+pnpm-error.log
+
+*.csv
+*.zip
+GEMINI.md

@@ -1,0 +1,40 @@
+{
+  "name": "backup-script",
+  "version": "1.0.0",
+  "description": "Script di backup per archiviare file in formato zip",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "start:minify": "node dist/index.min.js",
+    "dev": "ts-node src/main.ts",
+    "build:standard": "mkdir -p dist && esbuild src/main.ts --bundle --platform=node --target=node22 --outfile=dist/index.js",
+    "build:minify": "mkdir -p dist && esbuild src/main.ts --bundle --platform=node --target=node22 --outfile=dist/index.min.js --minify",
+    "build": "npm run build:standard && npm run build:minify"
+  },
+  "keywords": [
+    "backup",
+    "archive",
+    "zip",
+    "typescript"
+  ],
+  "author": {
+    "name": "Maurizio Tolomeo",
+    "email": "maurizio.tolomeo@outlook.it",
+    "url": "https://www.mauriziotolomeo.it"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "glob": "^11.0.3",
+    "inquirer": "^8.2.7"
+  },
+  "devDependencies": {
+    "@types/archiver": "^6.0.3",
+    "@types/glob": "^8.1.0",
+    "@types/inquirer": "^8.2.12",
+    "@types/node": "^22.13.5",
+    "esbuild": "^0.25.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}
