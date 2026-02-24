@@ -7,7 +7,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  build-and-test:
+  lint-build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +22,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '22'
-        cache: 'pnpm'
 
     - name: Install dependencies
       run: pnpm install
