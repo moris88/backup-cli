@@ -4,7 +4,7 @@
 
 ---
 
-<a name="english"></a>
+<a id="english"></a>
 
 # Backup Script CLI (English)
 
@@ -137,9 +137,11 @@ npm test
 - Website: [https://www.mauriziotolomeo.it](https://www.mauriziotolomeo.it)
 - Email: [maurizio.tolomeo@outlook.it](mailto:maurizio.tolomeo@outlook.it)
 
+_Created to simplify local backup management during development._
+
 ---
 
-<a name="italiano"></a>
+<a id="italiano"></a>
 
 # Backup Script CLI (Italiano)
 
@@ -274,4 +276,4 @@ npm test
 
 ---
 
-_Created to simplify local backup management during development. / Creato per semplificare la gestione dei backup locali durante lo sviluppo._
+_Creato per semplificare la gestione dei backup locali durante lo sviluppo._

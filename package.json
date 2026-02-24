@@ -4,7 +4,7 @@
   "description": "Script di backup per archiviare file in formato zip con cifratura",
   "main": "dist/index.js",
   "bin": {
-    "backup-cli": "dist/index.js"
+    "backup-cli": "dist/index.min.js"
   },
   "files": [
     "dist",
@@ -12,12 +12,9 @@
     "package.json"
   ],
   "scripts": {
-    "start": "node dist/index.js",
-    "start:minify": "node dist/index.min.js",
+    "start": "mkdir -p dist && esbuild src/main.ts --bundle --platform=node --target=node22 --outfile=dist/index.js --banner:js='#!/usr/bin/env node' && node dist/index.js",
     "dev": "ts-node src/main.ts",
-    "build:standard": "mkdir -p dist && esbuild src/main.ts --bundle --platform=node --target=node22 --outfile=dist/index.js --banner:js='#!/usr/bin/env node'",
-    "build:minify": "mkdir -p dist && esbuild src/main.ts --bundle --platform=node --target=node22 --outfile=dist/index.min.js --minify --banner:js='#!/usr/bin/env node'",
-    "build": "npm run build:standard && npm run build:minify",
+    "build": "mkdir -p dist && esbuild src/main.ts --bundle --platform=node --target=node22 --outfile=dist/index.min.js --minify --banner:js='#!/usr/bin/env node'",
     "test": "jest",
     "lint": "eslint 'src/**/*.ts' 'tests/**/*.ts'",
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts' 'README.md' 'GEMINI.md'"
