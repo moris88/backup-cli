@@ -22,6 +22,8 @@ Un'utilità a riga di comando (CLI) in TypeScript per creare rapidamente archivi
 
 ## 📦 Installazione
 
+### Come pacchetto locale
+
 1. Clona la repository:
 
    ```bash
@@ -34,6 +36,20 @@ Un'utilità a riga di comando (CLI) in TypeScript per creare rapidamente archivi
    ```bash
    pnpm install
    ```
+
+### Come CLI globale
+
+Puoi installare lo strumento globalmente per usarlo in qualsiasi progetto:
+
+```bash
+npm install -g backup-script-cli
+```
+
+Dopo l'installazione, potrai usare il comando:
+
+```bash
+backup-cli
+```
 
 ## 🎮 Utilizzo
 

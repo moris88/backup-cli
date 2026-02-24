@@ -1,14 +1,22 @@
 {
-  "name": "backup-script",
+  "name": "backup-script-cli",
   "version": "1.0.0",
-  "description": "Script di backup per archiviare file in formato zip",
+  "description": "Script di backup per archiviare file in formato zip con cifratura",
   "main": "dist/index.js",
+  "bin": {
+    "backup-cli": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
   "scripts": {
     "start": "node dist/index.js",
     "start:minify": "node dist/index.min.js",
     "dev": "ts-node src/main.ts",
-    "build:standard": "mkdir -p dist && esbuild src/main.ts --bundle --platform=node --target=node22 --outfile=dist/index.js",
-    "build:minify": "mkdir -p dist && esbuild src/main.ts --bundle --platform=node --target=node22 --outfile=dist/index.min.js --minify",
+    "build:standard": "mkdir -p dist && esbuild src/main.ts --bundle --platform=node --target=node22 --outfile=dist/index.js --banner:js='#!/usr/bin/env node'",
+    "build:minify": "mkdir -p dist && esbuild src/main.ts --bundle --platform=node --target=node22 --outfile=dist/index.min.js --minify --banner:js='#!/usr/bin/env node'",
     "build": "npm run build:standard && npm run build:minify",
     "test": "jest",
     "lint": "eslint 'src/**/*.ts' 'tests/**/*.ts'",
