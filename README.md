@@ -5,6 +5,7 @@ Un'utilità a riga di comando (CLI) in TypeScript per creare rapidamente archivi
 ## 🚀 Caratteristiche
 
 - **Selezione Interattiva**: Scegli quali file e cartelle della root includere nell'archivio.
+- **Cifratura Automatica**: Genera una password sicura a 14 caratteri per proteggere l'archivio ZIP.
 - **Esclusioni Intelligenti**: Esclude automaticamente cartelle pesanti o inutili come `node_modules`, `dist`, `.git` e altri file di backup esistenti.
 - **Compressione Ottimizzata**: Utilizza `archiver` con livello di compressione 9 (Zlib).
 - **Naming Personalizzabile**: Suggerisce un nome basato sulla data odierna (`backup_YYYY-MM-DD.zip`), ma permette la personalizzazione.
@@ -70,6 +71,7 @@ npm run start:minify
 ## 🧰 Dipendenze Principali
 
 - [archiver](https://www.npmjs.com/package/archiver): Generazione di archivi ZIP.
+- [archiver-zip-encryptable](https://www.npmjs.com/package/archiver-zip-encryptable): Supporto alla cifratura con password.
 - [inquirer](https://www.npmjs.com/package/inquirer): Interfaccia interattiva CLI.
 - [glob](https://www.npmjs.com/package/glob): Corrispondenza di pattern per i file.
 - [esbuild](https://esbuild.github.io/): Bundler ultra-veloce per la compilazione.

@@ -4,6 +4,23 @@ const archiver = require("archiver");
 const { glob } = require("glob");
 const inquirer = require("inquirer");
 
+// Registra il formato zip-encryptable per archiver
+archiver.registerFormat('zip-encryptable', require('archiver-zip-encryptable'));
+
+/**
+ * Genera una password casuale di 14 caratteri con alfanumerici e caratteri speciali.
+ */
+function generatePassword(): string {
+  const length = 14;
+  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+  return password;
+}
+
 /**
  * Crea un file zip di backup di tutti i file nella directory genitore della cartella src,
  * escludendo le cartelle node_modules, dist e altri file di backup.
@@ -100,9 +117,11 @@ async function createBackup(): Promise<void> {
 
   console.log(`\nInizio del processo di backup: ${outputFileName}`);
   
+  const password = generatePassword();
   const output = fs.createWriteStream(outputFilePath);
-  const archive = archiver("zip", {
+  const archive = archiver("zip-encryptable", {
     zlib: { level: 9 }, // Imposta il livello di compressione
+    password: password
   });
 
   archive.on("error", (err: Error) => {
@@ -155,6 +174,11 @@ async function createBackup(): Promise<void> {
       console.log(
         `Dimensione finale: ${(archive.pointer() / 1024 / 1024).toFixed(2)} MB`
       );
+      console.log("\n========================================");
+      console.log("PASSWORD ZIP GENERATA:");
+      console.log(password);
+      console.log("========================================\n");
+      console.log("IMPORTANTE: Salva questa password in un posto sicuro. Non verrà salvata altrove.");
       resolve();
     });
     output.on("error", reject);
