@@ -25,7 +25,7 @@ async function createBackup(): Promise<void> {
   console.log("Puoi scegliere quali file e cartelle della root includere.\n");
 
   // 1. Identifica la root del progetto (genitore di src)
-  const projectRoot: string = path.join(__dirname, "..");
+  const projectRoot: string = __dirname;
 
   // 2. Legge il contenuto della root per permettere la selezione
   const rootContent = fs.readdirSync(projectRoot);
