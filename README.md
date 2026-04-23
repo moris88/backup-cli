@@ -8,17 +8,19 @@
 
 # Backup Script CLI (English)
 
-A TypeScript command-line utility (CLI) to quickly create ZIP backup archives of your project, allowing granular selection of files and folders.
+A TypeScript command-line utility (CLI) to quickly create and extract ZIP backup archives of your project, allowing granular selection of files and folders and secure encryption.
 
 ## 🚀 Features
 
+- **Compression & Decompression**: Choose whether to create a new backup or extract an existing one from a simple initial menu.
 - **Interactive Selection**: Choose which files and folders from the root to include in the archive.
 - **Automatic Encryption**: Generates a secure 14-character password to protect the ZIP archive.
+- **Secure Extraction**: Allows extracting encrypted ZIP files by providing the correct password.
 - **Smart Exclusions**: Automatically excludes heavy or unnecessary folders like `node_modules`, `dist`, `.git`, and other existing backup files.
 - **Optimized Compression**: Uses `archiver` with compression level 9 (Zlib).
 - **Customizable Naming**: Suggests a name based on today's date (`backup_YYYY-MM-DD.zip`), but allows customization.
 - **Overwrite Protection**: Asks for confirmation before overwriting an existing file.
-- **Real-time Feedback**: Displays progress percentage and the size of processed data.
+- **Real-time Feedback**: Displays progress percentage and the size of processed data during compression.
 - **Code Quality**: Linting with ESLint and formatting with Prettier.
 - **Automated Testing**: Test suite with Jest to ensure logic correctness.
 - **Continuous Integration**: GitHub Actions configured for automatic lint, build, and test on every push.
@@ -83,12 +85,6 @@ After the build, you can run the standard version:
 npm start
 ```
 
-Or the minified version:
-
-```bash
-npm run start:minify
-```
-
 ### Quality and Testing
 
 To lint the code:
@@ -111,7 +107,7 @@ npm test
 
 ## 🏗️ Project Structure
 
-- `src/main.ts`: Main entry point of the script.
+- `src/main.ts`: Main entry point of the script (manages the main menu).
 - `src/utils/utils.ts`: Utility functions extracted for testability.
 - `tests/`: Automated test suite.
 - `dist/`: Contains bundles generated after the build.
@@ -123,6 +119,7 @@ npm test
 
 - [archiver](https://www.npmjs.com/package/archiver): ZIP archive generation.
 - [archiver-zip-encryptable](https://www.npmjs.com/package/archiver-zip-encryptable): Password encryption support.
+- [node-stream-zip](https://www.npmjs.com/package/node-stream-zip): Robust ZIP extraction with password support.
 - [inquirer](https://www.npmjs.com/package/inquirer): Interactive CLI interface.
 - [glob](https://www.npmjs.com/package/glob): Pattern matching for files.
 - [esbuild](https://esbuild.github.io/): Ultra-fast bundler for compilation.
@@ -145,17 +142,19 @@ _Created to simplify local backup management during development._
 
 # Backup Script CLI (Italiano)
 
-Un'utilità a riga di comando (CLI) in TypeScript per creare rapidamente archivi ZIP di backup del progetto, permettendo la selezione granulare dei file e delle cartelle.
+Un'utilità a riga di comando (CLI) in TypeScript per creare ed estrarre rapidamente archivi ZIP di backup del progetto, permettendo la selezione granulare dei file e delle cartelle e la cifratura sicura.
 
 ## 🚀 Caratteristiche
 
+- **Compressione e Decompressione**: Scegli se creare un nuovo backup o estrarne uno esistente tramite un semplice menu iniziale.
 - **Selezione Interattiva**: Scegli quali file e cartelle della root includere nell'archivio.
 - **Cifratura Automatica**: Genera una password sicura a 14 caratteri per proteggere l'archivio ZIP.
+- **Estrazione Sicura**: Permette di decomprimere file ZIP cifrati fornendo la password corretta.
 - **Esclusioni Intelligenti**: Esclude automaticamente cartelle pesanti o inutili come `node_modules`, `dist`, `.git` e altri file di backup esistenti.
 - **Compressione Ottimizzata**: Utilizza `archiver` con livello di compressione 9 (Zlib).
 - **Naming Personalizzabile**: Suggerisce un nome basato sulla data odierna (`backup_YYYY-MM-DD.zip`), ma permette la personalizzazione.
 - **Protezione Sovrascrittura**: Chiede conferma prima di sovrascrivere un file esistente.
-- **Feedback in Tempo Reale**: Mostra la percentuale di avanzamento e la dimensione dei dati processati.
+- **Feedback in Tempo Reale**: Mostra la percentuale di avanzamento e la dimensione dei dati processati durante la compressione.
 - **Qualità del Codice**: Linting con ESLint e formattazione con Prettier.
 - **Test Automatizzati**: Suite di test con Jest per garantire la correttezza della logica.
 - **Continuous Integration**: GitHub Actions configurate per lint, build e test automatici ad ogni push.
@@ -220,12 +219,6 @@ Dopo la build, puoi eseguire la versione standard:
 npm start
 ```
 
-Oppure la versione minificata:
-
-```bash
-npm run start:minify
-```
-
 ### Qualità e Test
 
 Per eseguire il linting del codice:
@@ -248,7 +241,7 @@ npm test
 
 ## 🏗️ Struttura del Progetto
 
-- `src/main.ts`: Punto di ingresso principale dello script.
+- `src/main.ts`: Punto di ingresso principale dello script (gestisce il menu principale).
 - `src/utils/utils.ts`: Funzioni di utilità estratte per testabilità.
 - `tests/`: Suite di test automatizzati.
 - `dist/`: Contiene i bundle generati dopo la build.
@@ -260,6 +253,7 @@ npm test
 
 - [archiver](https://www.npmjs.com/package/archiver): Generazione di archivi ZIP.
 - [archiver-zip-encryptable](https://www.npmjs.com/package/archiver-zip-encryptable): Supporto alla cifratura con password.
+- [node-stream-zip](https://www.npmjs.com/package/node-stream-zip): Estrazione robusta di file ZIP con supporto password.
 - [inquirer](https://www.npmjs.com/package/inquirer): Interfaccia interattiva CLI.
 - [glob](https://www.npmjs.com/package/glob): Corrispondenza di pattern per i file.
 - [esbuild](https://esbuild.github.io/): Bundler ultra-veloce per la compilazione.

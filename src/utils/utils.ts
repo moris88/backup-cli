@@ -74,6 +74,13 @@ function prepareChoices(
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
+/**
+ * Filtra solo i file con estensione .zip.
+ */
+function filterZipFiles(content: string[]): string[] {
+  return content.filter((item) => item.toLowerCase().endsWith(".zip"));
+}
+
 module.exports = {
   formatFileName,
   validateSelection,
@@ -81,4 +88,5 @@ module.exports = {
   generatePassword,
   formatProgress,
   prepareChoices,
+  filterZipFiles,
 };

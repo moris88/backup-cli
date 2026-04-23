@@ -5,6 +5,7 @@ const {
   filterRootContent,
   formatProgress,
   prepareChoices,
+  filterZipFiles,
 } = require("../src/utils/utils");
 
 describe("Utility Functions", () => {
@@ -107,6 +108,22 @@ describe("Utility Functions", () => {
 
       expect(choices[0].value).toBe("a.txt");
       expect(choices[1].value).toBe("z.txt");
+    });
+  });
+
+  describe("filterZipFiles", () => {
+    test("should return only .zip files", () => {
+      const content = ["backup.zip", "data.txt", "archive.ZIP", "folder"];
+      const result = filterZipFiles(content);
+      expect(result).toHaveLength(2);
+      expect(result).toContain("backup.zip");
+      expect(result).toContain("archive.ZIP");
+    });
+
+    test("should return empty array if no zip files are present", () => {
+      const content = ["data.txt", "folder"];
+      const result = filterZipFiles(content);
+      expect(result).toEqual([]);
     });
   });
 });
