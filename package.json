@@ -32,12 +32,14 @@
   },
   "license": "ISC",
   "dependencies": {
+    "adm-zip": "^0.5.17",
     "archiver": "^7.0.1",
     "archiver-zip-encryptable": "^1.0.10",
     "glob": "^13.0.6",
     "inquirer": "^8.2.7"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.5.8",
     "@types/archiver": "^7.0.0",
     "@types/glob": "^9.0.0",
     "@types/inquirer": "^8.2.12",
