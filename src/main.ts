@@ -24,7 +24,13 @@ async function createBackup(projectRoot: string): Promise<void> {
   console.log("\n--- Modalità Compressione ---");
 
   const rootContent = fs.readdirSync(projectRoot);
-  const excludeList = ["node_modules", "dist", ".next", ".git", "tsconfig.json"];
+  const excludeList = [
+    "node_modules",
+    "dist",
+    ".next",
+    ".git",
+    "tsconfig.json",
+  ];
 
   const filteredContent = filterRootContent(rootContent, excludeList);
 
@@ -51,7 +57,8 @@ async function createBackup(projectRoot: string): Promise<void> {
     {
       type: "input",
       name: "fileName",
-      message: "Inserisci il nome del file di backup (premi Invio per il default):",
+      message:
+        "Inserisci il nome del file di backup (premi Invio per il default):",
       default: defaultFileName,
       filter: formatFileName,
     },
@@ -71,7 +78,9 @@ async function createBackup(projectRoot: string): Promise<void> {
     ]);
 
     if (!overwriteAnswer.overwrite) {
-      console.log("Operazione annullata: il file esistente non verrà sovrascritto.");
+      console.log(
+        "Operazione annullata: il file esistente non verrà sovrascritto.",
+      );
       return;
     }
   }
@@ -91,9 +100,14 @@ async function createBackup(projectRoot: string): Promise<void> {
 
   archive.pipe(output);
 
-  archive.on("progress", (progress: { fs: { processedBytes: number; totalBytes: number } }) => {
-    process.stdout.write(formatProgress(progress.fs.processedBytes, progress.fs.totalBytes));
-  });
+  archive.on(
+    "progress",
+    (progress: { fs: { processedBytes: number; totalBytes: number } }) => {
+      process.stdout.write(
+        formatProgress(progress.fs.processedBytes, progress.fs.totalBytes),
+      );
+    },
+  );
 
   console.log("Scansione dei file in corso...");
 
@@ -121,12 +135,16 @@ async function createBackup(projectRoot: string): Promise<void> {
     output.on("close", () => {
       process.stdout.write("\n");
       console.log(`Backup completato. Creato il file: ${outputFileName}`);
-      console.log(`Dimensione finale: ${(archive.pointer() / 1024 / 1024).toFixed(2)} MB`);
+      console.log(
+        `Dimensione finale: ${(archive.pointer() / 1024 / 1024).toFixed(2)} MB`,
+      );
       console.log("\n========================================");
       console.log("PASSWORD ZIP GENERATA:");
       console.log(password);
       console.log("========================================\n");
-      console.log("IMPORTANTE: Salva questa password in un posto sicuro. Non verrà salvata altrove.");
+      console.log(
+        "IMPORTANTE: Salva questa password in un posto sicuro. Non verrà salvata altrove.",
+      );
       resolve();
     });
     output.on("error", reject);
@@ -182,9 +200,19 @@ async function extractBackup(projectRoot: string): Promise<void> {
     // Nota: extractAllTo richiede la password se i file sono cifrati
     zip.extractAllTo(extractPath, true, false, password);
     console.log("Estrazione completata con successo!");
-  } catch (err: any) {
-    console.error("\nErrore durante l'estrazione:", err.message || err);
-    if (fs.existsSync(extractPath) && fs.readdirSync(extractPath).length === 0) {
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(
+        "\nErrore durante l'estrazione:",
+        (err as Error).message || err,
+      );
+    } else {
+      console.error("\nErrore sconosciuto durante l'estrazione:", err);
+    }
+    if (
+      fs.existsSync(extractPath) &&
+      fs.readdirSync(extractPath).length === 0
+    ) {
       fs.rmdirSync(extractPath);
     }
   }
