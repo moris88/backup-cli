@@ -119,7 +119,7 @@ npm test
 
 - [archiver](https://www.npmjs.com/package/archiver): ZIP archive generation.
 - [archiver-zip-encryptable](https://www.npmjs.com/package/archiver-zip-encryptable): Password encryption support.
-- [node-stream-zip](https://www.npmjs.com/package/node-stream-zip): Robust ZIP extraction with password support.
+- [adm-zip](https://www.npmjs.com/package/adm-zip): Estrazione robusta di file ZIP con supporto password.
 - [inquirer](https://www.npmjs.com/package/inquirer): Interactive CLI interface.
 - [glob](https://www.npmjs.com/package/glob): Pattern matching for files.
 - [esbuild](https://esbuild.github.io/): Ultra-fast bundler for compilation.
@@ -253,7 +253,7 @@ npm test
 
 - [archiver](https://www.npmjs.com/package/archiver): Generazione di archivi ZIP.
 - [archiver-zip-encryptable](https://www.npmjs.com/package/archiver-zip-encryptable): Supporto alla cifratura con password.
-- [node-stream-zip](https://www.npmjs.com/package/node-stream-zip): Estrazione robusta di file ZIP con supporto password.
+- [adm-zip](https://www.npmjs.com/package/adm-zip): Estrazione robusta di file ZIP con supporto password.
 - [inquirer](https://www.npmjs.com/package/inquirer): Interfaccia interattiva CLI.
 - [glob](https://www.npmjs.com/package/glob): Corrispondenza di pattern per i file.
 - [esbuild](https://esbuild.github.io/): Bundler ultra-veloce per la compilazione.
