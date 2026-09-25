@@ -1,6 +1,6 @@
 {
   "name": "backup-script-cli",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Script di backup per archiviare file in formato zip con cifratura",
   "main": "dist/index.js",
   "bin": {
