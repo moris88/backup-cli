@@ -120,11 +120,19 @@ async function createBackup(projectRoot: string): Promise<void> {
         cwd: projectRoot,
         nodir: true,
         dot: true,
-        ignore: ["**/node_modules/**", "**/dist/**", "**/.next/**"],
+        ignore: [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/.next/**",
+          "**/app/**",
+          "**/*.zip",
+        ],
+        nocase: true,
       });
 
       files.forEach((file: string) => {
-        archive.file(path.join(projectRoot, file), { name: file });
+        const archiveName = file.split(path.sep).join("/");
+        archive.file(path.join(projectRoot, file), { name: archiveName });
       });
     } else {
       archive.file(fullPath, { name: item });
