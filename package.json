@@ -13,7 +13,7 @@
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "dist": "electron-vite build && electron-builder --win --publish never",
-    "typecheck": "tsc -p tsconfig.app.json",
+    "typecheck": "tsc",
     "lint": "biome check src tests electron.vite.config.ts vitest.config.ts",
     "clean": "rimraf dist out",
     "electron:install": "node node_modules/electron/install.js",
