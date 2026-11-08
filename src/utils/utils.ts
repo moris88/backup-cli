@@ -1,24 +1,7 @@
 /**
- * Formatta il nome del file assicurandosi che abbia l'estensione .zip
+ * Generates the choices list by filtering excluded items.
  */
-function formatFileName(input: string): string {
-  return input.endsWith(".zip") ? input : `${input}.zip`;
-}
-
-/**
- * Valida che l'utente abbia selezionato almeno un elemento.
- */
-function validateSelection(answer: string[]): boolean | string {
-  if (answer.length < 1) {
-    return "Devi selezionare almeno un elemento.";
-  }
-  return true;
-}
-
-/**
- * Genera la lista delle scelte filtrando gli elementi esclusi.
- */
-function filterRootContent(
+export function filterRootContent(
   rootContent: string[],
   excludeList: string[],
 ): string[] {
@@ -29,9 +12,9 @@ function filterRootContent(
 }
 
 /**
- * Genera una password casuale di 14 caratteri con alfanumerici e caratteri speciali.
+ * Generates a random 14-character password with alphanumeric and special characters.
  */
-function generatePassword(): string {
+export function generatePassword(): string {
   const length = 14;
   const charset =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=";
@@ -42,51 +25,3 @@ function generatePassword(): string {
   }
   return password;
 }
-
-/**
- * Formatta il messaggio di progresso della compressione.
- */
-function formatProgress(processedBytes: number, totalBytes: number): string {
-  const processedMB = (processedBytes / 1024 / 1024).toFixed(2);
-  const totalMB = (totalBytes / 1024 / 1024).toFixed(2);
-  const percentage =
-    totalBytes > 0 ? ((processedBytes / totalBytes) * 100).toFixed(2) : "0.00";
-
-  return `\rZippando: ${percentage}% (${processedMB} MB / ${totalMB} MB)...`;
-}
-
-/**
- * Prepara gli oggetti Choice per Inquirer con le etichette corrette.
- */
-function prepareChoices(
-  items: string[],
-  isDirCallback: (item: string) => boolean,
-) {
-  return items
-    .map((item) => {
-      const isDirectory = isDirCallback(item);
-      return {
-        name: isDirectory ? `[DIR]  ${item}` : `[FILE] ${item}`,
-        value: item,
-        short: item,
-      };
-    })
-    .sort((a, b) => a.name.localeCompare(b.name));
-}
-
-/**
- * Filtra solo i file con estensione .zip.
- */
-function filterZipFiles(content: string[]): string[] {
-  return content.filter((item) => item.toLowerCase().endsWith(".zip"));
-}
-
-module.exports = {
-  formatFileName,
-  validateSelection,
-  filterRootContent,
-  generatePassword,
-  formatProgress,
-  prepareChoices,
-  filterZipFiles,
-};

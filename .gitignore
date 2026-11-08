@@ -10,4 +10,7 @@ pnpm-error.log
 
 *.csv
 *.zip
-GEMINI.md
+
+/out
+
+/coverage

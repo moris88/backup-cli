@@ -1,12 +1,6 @@
-const {
-  generatePassword,
-  formatFileName,
-  validateSelection,
-  filterRootContent,
-  formatProgress,
-  prepareChoices,
-  filterZipFiles,
-} = require("../src/utils/utils");
+import { describe, expect, test } from "vitest";
+import { ignorePatternsFor } from "../src/shared/devFilters";
+import { filterRootContent, generatePassword } from "../src/utils/utils";
 
 describe("Utility Functions", () => {
   describe("generatePassword", () => {
@@ -28,28 +22,6 @@ describe("Utility Functions", () => {
       for (const char of password) {
         expect(charset).toContain(char);
       }
-    });
-  });
-
-  describe("formatFileName", () => {
-    test("should add .zip extension if missing", () => {
-      expect(formatFileName("mybackup")).toBe("mybackup.zip");
-    });
-
-    test("should not add .zip extension if already present", () => {
-      expect(formatFileName("mybackup.zip")).toBe("mybackup.zip");
-    });
-  });
-
-  describe("validateSelection", () => {
-    test("should return true if at least one item is selected", () => {
-      expect(validateSelection(["src", "package.json"])).toBe(true);
-    });
-
-    test("should return an error message if no items are selected", () => {
-      expect(validateSelection([])).toBe(
-        "Devi selezionare almeno un elemento.",
-      );
     });
   });
 
@@ -75,55 +47,11 @@ describe("Utility Functions", () => {
     });
   });
 
-  describe("formatProgress", () => {
-    test("should format progress string correctly", () => {
-      const result = formatProgress(1024 * 1024, 2 * 1024 * 1024);
-      expect(result).toContain("50.00%");
-      expect(result).toContain("1.00 MB");
-      expect(result).toContain("2.00 MB");
-      expect(result).toMatch(/^\r/);
-    });
-
-    test("should handle zero total bytes", () => {
-      const result = formatProgress(0, 0);
-      expect(result).toContain("0.00%");
-    });
-  });
-
-  describe("prepareChoices", () => {
-    test("should label directories and files correctly", () => {
-      const items = ["src", "README.md"];
-      const isDirMock = (item: string) => item === "src";
-
-      const choices = prepareChoices(items, isDirMock);
-
-      expect(choices[0].name).toBe("[DIR]  src");
-      expect(choices[1].name).toBe("[FILE] README.md");
-    });
-
-    test("should sort choices alphabetically by name", () => {
-      const items = ["z.txt", "a.txt"];
-      const isDirMock = () => false;
-      const choices = prepareChoices(items, isDirMock);
-
-      expect(choices[0].value).toBe("a.txt");
-      expect(choices[1].value).toBe("z.txt");
-    });
-  });
-
-  describe("filterZipFiles", () => {
-    test("should return only .zip files", () => {
-      const content = ["backup.zip", "data.txt", "archive.ZIP", "folder"];
-      const result = filterZipFiles(content);
-      expect(result).toHaveLength(2);
-      expect(result).toContain("backup.zip");
-      expect(result).toContain("archive.ZIP");
-    });
-
-    test("should return empty array if no zip files are present", () => {
-      const content = ["data.txt", "folder"];
-      const result = filterZipFiles(content);
-      expect(result).toEqual([]);
+  describe("ignorePatternsFor", () => {
+    test("restituisce i pattern delle sole categorie escluse", () => {
+      const patterns = ignorePatternsFor(["github"]);
+      expect(patterns).toContain("**/.github/**");
+      expect(patterns).not.toContain("**/.env");
     });
   });
 });

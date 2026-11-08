@@ -1,23 +1,26 @@
 {
   "name": "backup-script-cli",
   "version": "1.1.1",
-  "description": "Script di backup per archiviare file in formato zip con cifratura",
-  "main": "dist/index.js",
-  "bin": {
-    "backup-cli": "dist/index.min.js"
-  },
+  "description": "App desktop per creare ed estrarre backup ZIP cifrati",
+  "main": "out/main/index.js",
   "files": [
-    "dist",
+    "out",
     "README.md",
     "package.json"
   ],
   "scripts": {
-    "start": "node build.js && node dist/index.js",
-    "dev": "ts-node src/main.ts",
-    "build": "node build.js --minify",
-    "test": "jest",
-    "lint": "eslint src tests",
-    "format": "prettier --write src tests README.md GEMINI.md"
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "dist": "electron-vite build && electron-builder --win --publish never",
+    "typecheck": "tsc -p tsconfig.app.json",
+    "lint": "biome check src tests electron.vite.config.ts vitest.config.ts",
+    "clean": "rimraf dist out",
+    "electron:install": "node node_modules/electron/install.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "build:electron": "electron-vite build && electron-builder --win --linux --publish never"
   },
   "keywords": [
     "backup",
@@ -36,29 +39,83 @@
     "archiver": "^7.0.1",
     "archiver-zip-encryptable": "^1.0.10",
     "glob": "^13.0.6",
-    "inquirer": "^8.2.7"
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
+    "@tailwindcss/vite": "^4.3.5",
     "@types/adm-zip": "^0.5.8",
     "@types/archiver": "^7.0.0",
     "@types/glob": "^9.0.0",
-    "@types/inquirer": "^8.2.12",
-    "@types/jest": "^30.0.0",
     "@types/node": "^25.6.0",
-    "@typescript-eslint/eslint-plugin": "^8.58.2",
-    "@typescript-eslint/parser": "^8.58.2",
-    "esbuild": "^0.28.2",
-    "eslint": "^10.2.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-jest": "^29.15.2",
-    "eslint-plugin-prettier": "^5.5.5",
-    "jest": "^30.3.0",
-    "prettier": "^3.8.3",
-    "ts-jest": "^29.4.9",
-    "ts-node": "^10.9.2",
-    "typescript": "^6.0.2"
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.2.1",
+    "@vitest/coverage-v8": "^5.1.0",
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0",
+    "electron-vite": "^6.0.0",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^6.0.2",
+    "vite": "^8.3.6",
+    "vitest": "^5.1.0"
   },
   "engines": {
     "node": "24"
-  }
+  },
+  "build": {
+    "appId": "it.mauriziotolomeo.backup",
+    "productName": "Backup",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "out/**/*",
+      "package.json"
+    ],
+    "publish": null,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Utility",
+      "maintainer": "Maurizio Tolomeo <maurizio.tolomeo@outlook.it>"
+    }
+  },
+  "homepage": "https://github.com/moris88/backup-cli"
 }

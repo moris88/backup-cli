@@ -1,273 +1,52 @@
-# Backup Script CLI
+# Backup Desktop
 
-[English version](#english) | [Versione Italiana](#italiano)
-
----
-
-<a id="english"></a>
-
-# Backup Script CLI (English)
-
-A TypeScript command-line utility (CLI) to quickly create and extract ZIP backup archives of your project, allowing granular selection of files and folders and secure encryption.
+Desktop app (Electron + React + TypeScript + Vite + Tailwind) to create and extract password-protected ZIP backups of your projects.
 
 ## 🚀 Features
 
-- **Compression & Decompression**: Choose whether to create a new backup or extract an existing one from a simple initial menu.
-- **Interactive Selection**: Choose which files and folders from the root to include in the archive.
-- **Automatic Encryption**: Generates a secure 14-character password to protect the ZIP archive.
-- **Secure Extraction**: Allows extracting encrypted ZIP files by providing the correct password.
-- **Smart Exclusions**: Automatically excludes heavy or unnecessary folders like `node_modules`, `dist`, `.git`, and other existing backup files.
-- **Optimized Compression**: Uses `archiver` with compression level 9 (Zlib).
-- **Customizable Naming**: Suggests a name based on today's date (`backup_YYYY-MM-DD.zip`), but allows customization.
-- **Overwrite Protection**: Asks for confirmation before overwriting an existing file.
-- **Real-time Feedback**: Displays progress percentage and the size of processed data during compression.
-- **Code Quality**: Linting with ESLint and formatting with Prettier.
-- **Automated Testing**: Test suite with Jest to ensure logic correctness.
-- **Continuous Integration**: GitHub Actions configured for automatic lint, build, and test on every push.
+- **Compress**: pick a folder, choose which files and folders to include, and save an encrypted ZIP.
+- **One-time password**: a random 14-character password is generated and shown **only once**; it is never stored.
+- **Developer options**: checkboxes to include or exclude `.env` files, keys/certificates, AI files (`CLAUDE.md`, `.claude`, `AGENTS.md`, `.cursor`…), GitHub (`.github` workflows), Docker, editor settings, `.git`, `.next`, `node_modules`, build output and logs.
+- **Extract**: pick a ZIP, a destination folder and enter the password; files are extracted into a new `extracted_<name>_<timestamp>` folder.
+- **Progress and steps**: progress bar and a description of each phase; the UI is locked while an operation runs.
 
 ## 🛠️ Requirements
 
-- [Node.js](https://nodejs.org/) (recommended version: 22 or higher)
-- pnpm (recommended), npm, or yarn
-
-## 📦 Installation
-
-### As a local package
-
-1. Clone the repository:
-
-   ```bash
-   git clone <repository-url>
-   cd backup-script
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   pnpm install
-   ```
-
-### As a global CLI
-
-You can install the tool globally to use it in any project:
-
-```bash
-npm install -g backup-script-cli
-```
-
-After installation, you can use the command:
-
-```bash
-backup-cli
-```
+- [Node.js](https://nodejs.org/) 22 or higher
+- pnpm
 
 ## 🎮 Usage
 
-### Development
-
-To run the script directly from TypeScript sources:
-
 ```bash
-npm run dev
-```
-
-### Build and Production
-
-To compile the script into an optimized bundle (using esbuild):
-
-```bash
-npm run build
-```
-
-After the build, you can run the standard version:
-
-```bash
-npm start
-```
-
-### Quality and Testing
-
-To lint the code:
-
-```bash
-npm run lint
-```
-
-To automatically format the code:
-
-```bash
-npm run format
-```
-
-To run the test suite with Jest:
-
-```bash
-npm test
+pnpm install
+pnpm dev        # start the app in development mode
+pnpm build      # build main, preload and renderer into out/
+pnpm dist       # build the Windows installer into release/
+pnpm typecheck  # TypeScript check
+pnpm lint       # Biome
+pnpm test       # Vitest
+pnpm coverage   # Vitest + coverage (80% thresholds)
 ```
 
 ## 🏗️ Project Structure
 
-- `src/main.ts`: Main entry point of the script (manages the main menu).
-- `src/utils/utils.ts`: Utility functions extracted for testability.
-- `tests/`: Automated test suite.
-- `dist/`: Contains bundles generated after the build.
-- `package.json`: Project configuration and npm scripts.
-- `.github/workflows/`: Configuration for GitHub Actions.
-- `eslint.config.js` & `.prettierrc`: Configurations for code quality.
+- `src/main/`: Electron main process (window, IPC, compression/extraction service).
+- `src/preload/`: secure bridge exposing `window.backupApi` to the UI.
+- `src/renderer/`: React UI with Tailwind.
+- `src/shared/`: types and developer filters shared between processes.
+- `src/utils/`: password generation and helpers.
+- `tests/`: Vitest test suite (coverage thresholds 80%).
 
 ## 🧰 Main Dependencies
 
-- [archiver](https://www.npmjs.com/package/archiver): ZIP archive generation.
-- [archiver-zip-encryptable](https://www.npmjs.com/package/archiver-zip-encryptable): Password encryption support.
-- [adm-zip](https://www.npmjs.com/package/adm-zip): Estrazione robusta di file ZIP con supporto password.
-- [inquirer](https://www.npmjs.com/package/inquirer): Interactive CLI interface.
-- [glob](https://www.npmjs.com/package/glob): Pattern matching for files.
-- [esbuild](https://esbuild.github.io/): Ultra-fast bundler for compilation.
-- [Jest](https://jestjs.io/): Testing framework.
-- [ESLint](https://eslint.org/): Linting tool.
-- [Prettier](https://prettier.io/): Code formatter.
+- [Electron](https://www.electronjs.org/), [electron-vite](https://electron-vite.org/), [React](https://react.dev/), [Tailwind CSS](https://tailwindcss.com/)
+- [archiver](https://www.npmjs.com/package/archiver) + [archiver-zip-encryptable](https://www.npmjs.com/package/archiver-zip-encryptable): encrypted ZIP creation.
+- [adm-zip](https://www.npmjs.com/package/adm-zip): password-protected extraction.
+- [glob](https://www.npmjs.com/package/glob): file matching and filters.
+- [Vitest](https://vitest.dev/), [Biome](https://biomejs.dev/)
 
 ## 👨‍💻 Author
 
-**Maurizio Tolomeo**
-
+- Name: [Maurizio Tolomeo](https://github.com/moris88)
 - Website: [https://www.mauriziotolomeo.it](https://www.mauriziotolomeo.it)
 - Email: [maurizio.tolomeo@outlook.it](mailto:maurizio.tolomeo@outlook.it)
-
-_Created to simplify local backup management during development._
-
----
-
-<a id="italiano"></a>
-
-# Backup Script CLI (Italiano)
-
-Un'utilità a riga di comando (CLI) in TypeScript per creare ed estrarre rapidamente archivi ZIP di backup del progetto, permettendo la selezione granulare dei file e delle cartelle e la cifratura sicura.
-
-## 🚀 Caratteristiche
-
-- **Compressione e Decompressione**: Scegli se creare un nuovo backup o estrarne uno esistente tramite un semplice menu iniziale.
-- **Selezione Interattiva**: Scegli quali file e cartelle della root includere nell'archivio.
-- **Cifratura Automatica**: Genera una password sicura a 14 caratteri per proteggere l'archivio ZIP.
-- **Estrazione Sicura**: Permette di decomprimere file ZIP cifrati fornendo la password corretta.
-- **Esclusioni Intelligenti**: Esclude automaticamente cartelle pesanti o inutili come `node_modules`, `dist`, `.git` e altri file di backup esistenti.
-- **Compressione Ottimizzata**: Utilizza `archiver` con livello di compressione 9 (Zlib).
-- **Naming Personalizzabile**: Suggerisce un nome basato sulla data odierna (`backup_YYYY-MM-DD.zip`), ma permette la personalizzazione.
-- **Protezione Sovrascrittura**: Chiede conferma prima di sovrascrivere un file esistente.
-- **Feedback in Tempo Reale**: Mostra la percentuale di avanzamento e la dimensione dei dati processati durante la compressione.
-- **Qualità del Codice**: Linting con ESLint e formattazione con Prettier.
-- **Test Automatizzati**: Suite di test con Jest per garantire la correttezza della logica.
-- **Continuous Integration**: GitHub Actions configurate per lint, build e test automatici ad ogni push.
-
-## 🛠️ Requisiti
-
-- [Node.js](https://nodejs.org/) (versione consigliata: 22 o superiore)
-- pnpm (consigliato), npm o yarn
-
-## 📦 Installazione
-
-### Come pacchetto locale
-
-1. Clona la repository:
-
-   ```bash
-   git clone <repository-url>
-   cd backup-script
-   ```
-
-2. Installa le dipendenze:
-
-   ```bash
-   pnpm install
-   ```
-
-### Come CLI globale
-
-Puoi installare lo strumento globalmente per usarlo in qualsiasi progetto:
-
-```bash
-npm install -g backup-script-cli
-```
-
-Dopo l'installazione, potrai usare il comando:
-
-```bash
-backup-cli
-```
-
-## 🎮 Utilizzo
-
-### Sviluppo
-
-Per eseguire lo script direttamente dai sorgenti TypeScript:
-
-```bash
-npm run dev
-```
-
-### Build e Produzione
-
-Per compilare lo script in un bundle ottimizzato (utilizzando esbuild):
-
-```bash
-npm run build
-```
-
-Dopo la build, puoi eseguire la versione standard:
-
-```bash
-npm start
-```
-
-### Qualità e Test
-
-Per eseguire il linting del codice:
-
-```bash
-npm run lint
-```
-
-Per formattare automaticamente il codice:
-
-```bash
-npm run format
-```
-
-Per eseguire la suite di test con Jest:
-
-```bash
-npm test
-```
-
-## 🏗️ Struttura del Progetto
-
-- `src/main.ts`: Punto di ingresso principale dello script (gestisce il menu principale).
-- `src/utils/utils.ts`: Funzioni di utilità estratte per testabilità.
-- `tests/`: Suite di test automatizzati.
-- `dist/`: Contiene i bundle generati dopo la build.
-- `package.json`: Configurazione del progetto e script npm.
-- `.github/workflows/`: Configurazione per GitHub Actions.
-- `eslint.config.js` & `.prettierrc`: Configurazioni per la qualità del codice.
-
-## 🧰 Dipendenze Principali
-
-- [archiver](https://www.npmjs.com/package/archiver): Generazione di archivi ZIP.
-- [archiver-zip-encryptable](https://www.npmjs.com/package/archiver-zip-encryptable): Supporto alla cifratura con password.
-- [adm-zip](https://www.npmjs.com/package/adm-zip): Estrazione robusta di file ZIP con supporto password.
-- [inquirer](https://www.npmjs.com/package/inquirer): Interfaccia interattiva CLI.
-- [glob](https://www.npmjs.com/package/glob): Corrispondenza di pattern per i file.
-- [esbuild](https://esbuild.github.io/): Bundler ultra-veloce per la compilazione.
-- [Jest](https://jestjs.io/): Framework di testing.
-- [ESLint](https://eslint.org/): Strumento di linting.
-- [Prettier](https://prettier.io/): Formattatore di codice.
-
-## 👨‍💻 Autore
-
-**Maurizio Tolomeo**
-
-- Website: [https://www.mauriziotolomeo.it](https://www.mauriziotolomeo.it)
-- Email: [maurizio.tolomeo@outlook.it](mailto:maurizio.tolomeo@outlook.it)
-
----
-
-_Creato per semplificare la gestione dei backup locali durante lo sviluppo._

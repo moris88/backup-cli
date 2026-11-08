@@ -1,36 +1,50 @@
 name: CI
 
 on:
-  push:
-    branches: [ main, master ]
   pull_request:
-    branches: [ main, master ]
+    branches:
+      - "**"
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - "main"
+permissions: {}
 
 jobs:
-  lint-build-and-test:
+  build-and-lint:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v5
+        with:
+          version: 11
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Audit
+        run: pnpm audit --audit-level=critical
+      - name: Lint
+        run: pnpm lint
+      - name: Cache Electron
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/electron
+            ~/.cache/electron-builder
+          key: ${{ runner.os }}-electron-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Build Desktop
+        run: pnpm build
+      - name: Build Desktop
+        uses: nick-fields/retry@v3
+        with:
+          max_attempts: 3
+          timeout_minutes: 5
+          command: pnpm build
 
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 10
-
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '22'
-
-    - name: Install dependencies
-      run: pnpm install
-      
-    - name: Run lint
-      run: pnpm run lint
-
-    - name: Run build
-      run: pnpm run build
-
-    - name: Run tests
-      run: pnpm test
+      - name: Install Electron
+        run: pnpm electron:install
+      - name: Run Tests
+        run: pnpm test:coverage
